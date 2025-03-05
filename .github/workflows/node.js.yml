@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [21.x, 22.x]
+        node-version: [21.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -25,7 +25,7 @@ jobs:
 
     # 安装 pnpm
     - name: Install pnpm
-      uses: pnpm/setup-pnpm@v2
+      uses: npm install -g pnpm
       
     - name: Setup node.js
       uses: actions/setup-node@v4
