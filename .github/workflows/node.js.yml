@@ -36,9 +36,6 @@ jobs:
     - name: Install dependencies
       run: pnpm install --frozen-lockfile
 
-    - name: Build project
-      run : pnpm build
-
     - name: Setup SSH agent
       uses: webfactory/ssh-agent@v0.5.3
       with: 
