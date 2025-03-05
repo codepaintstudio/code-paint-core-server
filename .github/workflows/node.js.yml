@@ -22,11 +22,16 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
+
+    # 安装 pnpm
+    - name: Install pnpm
+      uses: pnpm/setup-pnpm@v2
       
     - name: Setup node.js
       uses: actions/setup-node@v4
       with:
         node-version: '21'
+        cache: 'pnpm'
         
     - name: Install dependencies
       run: pnpm install
