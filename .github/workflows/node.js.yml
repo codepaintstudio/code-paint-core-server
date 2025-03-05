@@ -14,27 +14,9 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [21.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-
-    # 安装 pnpm
-    - name: Install pnpm
-      run: npm install -g pnpm
-
-    - name: Setup node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '21'
-        cache: 'pnpm'
-        
-    - name: Install dependencies
-      run: pnpm install --frozen-lockfile
 
     - name: Setup SSH agent
       uses: webfactory/ssh-agent@v0.5.3
