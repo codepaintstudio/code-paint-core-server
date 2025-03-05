@@ -47,4 +47,4 @@ jobs:
 
     - name : Deploy vite-project alibaba Cloud
       run : |
-        scp -r ./dist/* root@47.109.193.161:/www/wwwroot/CpCentralServer
+        scp -r ./ root@47.109.193.161:/www/wwwroot/CpCentralServer
