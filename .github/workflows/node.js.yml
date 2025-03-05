@@ -1,0 +1,48 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Cp Central Server
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '21'
+        
+    - name: Install dependencies
+      run: pnpm
+
+    - name: Build project
+      run : pnpm build
+
+    - name: Setup SSH agent
+      uses: webfactory/ssh-agent@v0.5.3
+      with: 
+        ssh-private-key: ${{ secrete.SSH_PRIVATE_KEY }}
+
+    - name: add SSH known hosts
+      run: |
+        ssh-keyscan -H 47.109.193.161 >> ~/.ssh/known_hosts
+
+    - name : Deploy vite-project alibaba Cloud
+      run : |
+        scp -r ./dist/* root@47.109.193.161:/www/wwwroot/CpCentralServer
