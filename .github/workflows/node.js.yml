@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x, 20.x, 22.x]
+        node-version: [21.x, 22.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -29,7 +29,7 @@ jobs:
         node-version: '21'
         
     - name: Install dependencies
-      run: pnpm
+      run: pnpm install
 
     - name: Build project
       run : pnpm build
@@ -37,7 +37,7 @@ jobs:
     - name: Setup SSH agent
       uses: webfactory/ssh-agent@v0.5.3
       with: 
-        ssh-private-key: ${{ secrete.SSH_PRIVATE_KEY }}
+        ssh-private-key: ${{ secretes.SSH_PRIVATE_KEY }}
 
     - name: add SSH known hosts
       run: |
