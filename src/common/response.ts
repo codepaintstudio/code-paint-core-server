@@ -12,7 +12,7 @@ export class ResponseInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       map((data) => {
-        console.log(data);
+        // console.log(data);
 
         // 如果返回值已经包含 status 和 message，则直接使用
         if (data && data.status !== undefined && data.message !== undefined) {

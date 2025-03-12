@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { CreateUsercenterDto } from './dto/create-usercenter.dto';
 import { UpdateUsercenterDto } from './dto/update-usercenter.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -19,7 +23,16 @@ export class UsercenterService {
       createTime: new Date(), // 自动设置创建时间
       updateTime: new Date(), // 自动设置更新时间
     });
-    return this.userRepository.save(newUser);
+    if (!newUser) {
+      throw new BadRequestException('创建失败,请检查参数');
+    }
+    const data = await this.userRepository.save(newUser);
+    return {
+      success: true,
+      status: 200,
+      data: data,
+      message: '创建成功',
+    };
   }
 
   async findAll(page, limit) {
@@ -29,37 +42,54 @@ export class UsercenterService {
       take: limit, // 每页记录数
       order: { createTime: 'DESC' }, // 按创建时间倒序排列
     });
-
-    return { total, data };
+    if (total === 0) {
+      throw new InternalServerErrorException(`数量为0`);
+    }
+    return { total, data, message: '查询成功', success: true, status: 200 };
   }
 
   async findOne(id: number) {
     const user = await this.userRepository.findOneBy({ userId: id });
     if (!user) {
-      throw new Error(`用户 ID 为 ${id} 的记录不存在`);
+      throw new InternalServerErrorException(`用户 ID 为 ${id} 的记录不存在`);
     }
-    return user;
+    return {
+      data: user,
+      message: '查询成功',
+      success: true,
+      status: 200,
+    };
   }
 
   async update(id: number, updateUsercenterDto: UpdateUsercenterDto) {
     const user = await this.userRepository.findOneBy({ userId: id });
     if (!user) {
-      throw new Error(`用户 ID 为 ${id} 的记录不存在`);
+      throw new InternalServerErrorException(`用户 ID 为 ${id} 的记录不存在`);
     }
 
     // 合并更新数据
     Object.assign(user, updateUsercenterDto);
     user.updateTime = new Date(); // 更新时间
-
-    return this.userRepository.save(user);
+    const data = await this.userRepository.save(user);
+    return {
+      message: '更新成功',
+      success: true,
+      status: 200,
+      data: data,
+    };
   }
 
   async remove(id: number) {
     const user = await this.userRepository.findOneBy({ userId: id });
     if (!user) {
-      throw new Error(`用户 ID 为 ${id} 的记录不存在`);
+      throw new InternalServerErrorException(`用户 ID 为 ${id} 的记录不存在`);
     }
-
-    await this.userRepository.delete(id);
+    const data = await this.userRepository.delete(id);
+    return {
+      message: '删除成功',
+      success: true,
+      status: 200,
+      data: data,
+    };
   }
 }
