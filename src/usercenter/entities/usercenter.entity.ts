@@ -96,4 +96,18 @@ export class UserEntity {
     nullable: true,
   })
   lastLoginIp?: string; // 最后登录 IP，可为空
+
+  @Column({
+    type: 'varchar',
+    length: 30,
+    name: 'user_name',
+  })
+  userName: string; // 用户名
+
+  @Column({
+    type: 'varchar',
+    length: 30,
+    name: 'user_password',
+  })
+  userPassWord: string; // 用户密码
 }

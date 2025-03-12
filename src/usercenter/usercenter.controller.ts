@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { UsercenterService } from './usercenter.service';
 import { CreateUsercenterDto } from './dto/create-usercenter.dto';
 import { UpdateUsercenterDto } from './dto/update-usercenter.dto';
@@ -8,13 +17,13 @@ export class UsercenterController {
   constructor(private readonly usercenterService: UsercenterService) {}
 
   @Post()
-  create(@Body() createUsercenterDto: CreateUsercenterDto) {
-    return this.usercenterService.create(createUsercenterDto);
+  createUser(@Body() createUsercenterDto: CreateUsercenterDto) {
+    return this.usercenterService.createUser(createUsercenterDto);
   }
 
   @Get()
-  findAll() {
-    return this.usercenterService.findAll();
+  findAll(@Query('page') page = 1, @Query('limit') limit = 10) {
+    return this.usercenterService.findAll(page, limit);
   }
 
   @Get(':id')
@@ -23,7 +32,10 @@ export class UsercenterController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUsercenterDto: UpdateUsercenterDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateUsercenterDto: UpdateUsercenterDto,
+  ) {
     return this.usercenterService.update(+id, updateUsercenterDto);
   }
 
