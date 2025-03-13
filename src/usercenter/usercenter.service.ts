@@ -48,11 +48,28 @@ export class UsercenterService {
     return { total, data, message: '查询成功', success: true, status: 200 };
   }
 
-  async findOne(id: number) {
-    const user = await this.userRepository.findOneBy({ userId: id });
-    if (!user) {
-      throw new InternalServerErrorException(`用户 ID 为 ${id} 的记录不存在`);
+  async findOne(identifier: string) {
+    let user: UserEntity | null = null;
+    const id = typeof identifier === 'number' ? identifier : Number(identifier);
+    // 尝试作为用户ID查询
+    if (!isNaN(id)) {
+      user = await this.userRepository.findOneBy({ userId: id });
     }
+
+    // 如果未找到且identifier是字符串类型，尝试其他字段查询
+    if (!user && typeof identifier === 'string') {
+      user = await this.userRepository.findOne({
+        where: [
+          { userName: identifier },
+          { userPhoneNumber: identifier },
+          { userEmail: identifier },
+        ],
+      });
+    }
+    if (!user) {
+      throw new InternalServerErrorException(`未找到匹配 ${identifier} 的记录`);
+    }
+
     return {
       data: user,
       message: '查询成功',

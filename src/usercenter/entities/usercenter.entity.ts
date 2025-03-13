@@ -101,6 +101,7 @@ export class UserEntity {
     type: 'varchar',
     length: 30,
     name: 'user_name',
+    unique: true,
   })
   userName: string; // 用户名
 
@@ -109,5 +110,5 @@ export class UserEntity {
     length: 30,
     name: 'user_password',
   })
-  userPassWord: string; // 用户密码
+  userPassword: string; // 用户密码
 }

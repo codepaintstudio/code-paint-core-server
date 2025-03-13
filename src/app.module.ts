@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { getConfig } from './utils/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsercenterModule } from './usercenter/usercenter.module';
+import { AuthModule } from './auth/auth.module';
 let envFilePath = ['.env'];
 export const IS_DEV = process.env.RUNNING_ENV !== 'prod';
 
@@ -34,6 +35,7 @@ if (IS_DEV) {
       autoLoadEntities: true, //如果为true,将自动加载实体 forFeature()方法注册的每个实体都将自动添加到配置对象的实体数组中
     }),
     UsercenterModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

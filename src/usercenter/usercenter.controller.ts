@@ -26,9 +26,9 @@ export class UsercenterController {
     return this.usercenterService.findAll(page, limit);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usercenterService.findOne(+id);
+  @Get(':identifier')
+  findOne(@Param('identifier') identifier: string) {
+    return this.usercenterService.findOne(identifier);
   }
 
   @Patch(':id')
