@@ -21,12 +21,14 @@ export class AuthService {
       code: 200,
       message: '登录成功',
       success: true,
-      access_token: await this.jwtService.signAsync(payload, {
-        expiresIn: '5h',
-      }),
-      refresh_token: await this.jwtService.signAsync(refreshPayload, {
-        expiresIn: '2d',
-      }),
+      data: {
+        access_token: await this.jwtService.signAsync(payload, {
+          expiresIn: '5h',
+        }),
+        refresh_token: await this.jwtService.signAsync(refreshPayload, {
+          expiresIn: '2d',
+        }),
+      },
     };
   }
 

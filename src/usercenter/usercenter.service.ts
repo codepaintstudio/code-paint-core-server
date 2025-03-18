@@ -27,15 +27,18 @@ export class UsercenterService {
       throw new BadRequestException('创建失败,请检查参数');
     }
     const data = await this.userRepository.save(newUser);
+
+    // 删除密码字段
+    const { userPassword, ...userWithoutPassword } = data;
+    const newData = userWithoutPassword as UserEntity;
     return {
-      success: true,
       status: 200,
-      data: data,
+      data: newData,
       message: '创建成功',
     };
   }
 
-  async findAll(page, limit) {
+  async findAll(page: number, limit: number) {
     const skip = (page - 1) * limit; // 计算跳过的记录数
     const [data, total] = await this.userRepository.findAndCount({
       skip, // 跳过记录数
@@ -45,7 +48,12 @@ export class UsercenterService {
     if (total === 0) {
       throw new InternalServerErrorException(`数量为0`);
     }
-    return { total, data, message: '查询成功', success: true, status: 200 };
+    // 删除密码字段
+    data.forEach((user) => {
+      const { userPassword, ...userWithoutPassword } = user;
+      user = userWithoutPassword as UserEntity;
+    });
+    return { total, data, message: '查询成功', status: 200 };
   }
 
   async findOne(identifier: string) {
@@ -70,10 +78,12 @@ export class UsercenterService {
       throw new InternalServerErrorException(`未找到匹配 ${identifier} 的记录`);
     }
 
+    const { userPassword, ...userWithoutPassword } = user;
+    user = userWithoutPassword as UserEntity;
+
     return {
       data: user,
       message: '查询成功',
-      success: true,
       status: 200,
     };
   }
@@ -87,12 +97,15 @@ export class UsercenterService {
     // 合并更新数据
     Object.assign(user, updateUsercenterDto);
     user.updateTime = new Date(); // 更新时间
-    const data = await this.userRepository.save(user);
+    let newUser = await this.userRepository.save(user);
+
+    const { userPassword, ...userWithoutPassword } = newUser;
+    newUser = userWithoutPassword as UserEntity;
+
     return {
       message: '更新成功',
-      success: true,
       status: 200,
-      data: data,
+      data: newUser,
     };
   }
 
@@ -102,9 +115,9 @@ export class UsercenterService {
       throw new InternalServerErrorException(`用户 ID 为 ${id} 的记录不存在`);
     }
     const data = await this.userRepository.delete(id);
+
     return {
       message: '删除成功',
-      success: true,
       status: 200,
       data: data,
     };
