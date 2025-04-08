@@ -38,7 +38,7 @@ export class ArticleController {
     @Post()
     @UseGuards(AuthGuard)
     create(@Body() createArticleDto: CreateArticleDto, @Request() req): Promise<ArticleResponseDto> {
-        return this.articleService.create(createArticleDto, req.user.userId);
+        return this.articleService.create(createArticleDto, req.user.sub);
     }
 
     /**
@@ -93,7 +93,7 @@ export class ArticleController {
         @Body() updateArticleDto: UpdateArticleDto,
         @Request() req,
     ): Promise<ArticleResponseDto> {
-        return this.articleService.update(+id, updateArticleDto, req.user.userId);
+        return this.articleService.update(+id, updateArticleDto, req.user.sub);
     }
 
     /**
@@ -109,6 +109,6 @@ export class ArticleController {
     @Delete(':id')
     @UseGuards(AuthGuard)
     remove(@Param('id') id: string, @Request() req): Promise<void> {
-        return this.articleService.remove(+id, req.user.userId);
+        return this.articleService.remove(+id, req.user.sub);
     }
 }

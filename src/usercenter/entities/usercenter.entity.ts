@@ -66,7 +66,7 @@ export class UserEntity {
     type: 'int',
     name: 'user_auth',
     nullable: false,
-    default: 1, // 默认值为 1（普通用户）
+    default: 1, // 默认值为 1（普通用户），2（管理员）
   })
   userAuth: number; // 用户权限
 

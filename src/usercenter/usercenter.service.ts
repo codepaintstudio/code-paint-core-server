@@ -15,7 +15,7 @@ export class UsercenterService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-  ) {}
+  ) { }
   async createUser(createUsercenterDto: CreateUsercenterDto) {
     await validateOrReject(createUsercenterDto);
     const newUser = this.userRepository.create({
@@ -77,9 +77,6 @@ export class UsercenterService {
     if (!user) {
       throw new InternalServerErrorException(`未找到匹配 ${identifier} 的记录`);
     }
-
-    const { userPassword, ...userWithoutPassword } = user;
-    user = userWithoutPassword as UserEntity;
 
     return {
       data: user,

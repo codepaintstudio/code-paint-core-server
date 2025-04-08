@@ -1,6 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between } from 'typeorm';
+import { Repository } from 'typeorm';
 import { ArticleEntity } from './entities/article.entity';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
@@ -17,11 +17,14 @@ export class ArticleService {
     /**
      * 构造函数
      * @param articleRepository - 文章仓库实例，用于数据库操作
+     * @param userRepository - 用户仓库实例，用于数据库操作
      */
     constructor(
         @InjectRepository(ArticleEntity)
         private readonly articleRepository: Repository<ArticleEntity>,
-    ) {}
+        @InjectRepository(UserEntity)
+        private readonly userRepository: Repository<UserEntity>,
+    ) { }
 
     /**
      * 创建新文章
@@ -32,10 +35,10 @@ export class ArticleService {
     async create(createArticleDto: CreateArticleDto, userId: number): Promise<ArticleResponseDto> {
         const article = this.articleRepository.create({
             ...createArticleDto,
-            user: { userId } as UserEntity,
+            userId,
         });
         const savedArticle = await this.articleRepository.save(article);
-        return new ArticleResponseDto(savedArticle as unknown as Partial<ArticleResponseDto>);
+        return new ArticleResponseDto(savedArticle);
     }
 
     /**
@@ -49,7 +52,8 @@ export class ArticleService {
         const skip = (page - 1) * limit;
 
         // 创建查询构建器
-        const queryBuilder = this.articleRepository.createQueryBuilder('article');
+        const queryBuilder = this.articleRepository
+            .createQueryBuilder('article');
 
         // 根据文章类型过滤
         if (articleType) {
@@ -77,7 +81,7 @@ export class ArticleService {
             .getManyAndCount();
 
         return {
-            items: items.map(item => new ArticleResponseDto(item as unknown as Partial<ArticleResponseDto>)),
+            items: items.map(item => new ArticleResponseDto(item)),
             total,
         };
     }
@@ -94,14 +98,14 @@ export class ArticleService {
         });
 
         if (!article) {
-            throw new NotFoundException(`Article with ID ${id} not found`);
+            throw new NotFoundException(`文章ID ${id} 不存在`);
         }
 
         // 增加文章浏览量
         article.articleViewCount += 1;
         await this.articleRepository.save(article);
 
-        return new ArticleResponseDto(article as unknown as Partial<ArticleResponseDto>);
+        return new ArticleResponseDto(article);
     }
 
     /**
@@ -113,28 +117,39 @@ export class ArticleService {
      * @throws NotFoundException 当文章不存在或用户无权限时抛出异常
      */
     async update(id: number, updateArticleDto: UpdateArticleDto, userId: number): Promise<ArticleResponseDto> {
-        // 查找文章并加载用户关系
+        // 查找文章
         const article = await this.articleRepository.findOne({
             where: { articleId: id },
-            relations: ['user'],
         });
 
         if (!article) {
-            throw new NotFoundException(`Article with ID ${id} not found`);
+            throw new NotFoundException(`文章ID ${id} 不存在`);
         }
 
-        // 验证用户权限
-        if (article.user.userId !== userId) {
-            throw new NotFoundException('You are not authorized to update this article');
+        // 获取用户信息
+        const user = await this.userRepository.findOne({
+            where: { userId },
+            select: ['userAuth'],
+        });
+
+        if (!user) {
+            throw new NotFoundException('用户不存在');
         }
 
-        // 更新文章
+        // 检查权限：只有文章作者和管理员可以修改
+        const isAdmin = user.userAuth === 2;
+        const isAuthor = article.userId === userId;
+
+        if (!isAdmin && !isAuthor) {
+            throw new ForbiddenException('您没有权限修改这篇文章');
+        }
+
         const updatedArticle = await this.articleRepository.save({
             ...article,
             ...updateArticleDto,
         });
 
-        return new ArticleResponseDto(updatedArticle as unknown as Partial<ArticleResponseDto>);
+        return new ArticleResponseDto(updatedArticle);
     }
 
     /**
@@ -144,19 +159,31 @@ export class ArticleService {
      * @throws NotFoundException 当文章不存在或用户无权限时抛出异常
      */
     async remove(id: number, userId: number): Promise<void> {
-        // 查找文章并加载用户关系
+        // 查找文章
         const article = await this.articleRepository.findOne({
             where: { articleId: id },
-            relations: ['user'],
         });
 
         if (!article) {
-            throw new NotFoundException(`Article with ID ${id} not found`);
+            throw new NotFoundException(`文章ID ${id} 不存在`);
         }
 
-        // 验证用户权限
-        if (article.user.userId !== userId) {
-            throw new NotFoundException('You are not authorized to delete this article');
+        // 获取用户信息
+        const user = await this.userRepository.findOne({
+            where: { userId },
+            select: ['userAuth'],
+        });
+
+        if (!user) {
+            throw new NotFoundException('用户不存在');
+        }
+
+        // 检查权限：只有文章作者和管理员可以删除
+        const isAdmin = user.userAuth === 2;
+        const isAuthor = article.userId === userId;
+
+        if (!isAdmin && !isAuthor) {
+            throw new ForbiddenException('您没有权限删除这篇文章');
         }
 
         // 删除文章
