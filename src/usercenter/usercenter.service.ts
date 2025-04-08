@@ -15,7 +15,7 @@ export class UsercenterService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-  ) { }
+  ) {}
   async createUser(createUsercenterDto: CreateUsercenterDto) {
     await validateOrReject(createUsercenterDto);
     const newUser = this.userRepository.create({

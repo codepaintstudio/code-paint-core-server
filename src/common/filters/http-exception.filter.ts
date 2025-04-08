@@ -1,4 +1,10 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  ExceptionFilter,
+  Catch,
+  ArgumentsHost,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { Request, Response } from 'express';
 import { QueryFailedError } from 'typeorm';
 
@@ -25,41 +31,45 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       const exceptionResponse = exception.getResponse();
-      
+
       // 处理验证错误
-      if (typeof exceptionResponse === 'object' && 'message' in exceptionResponse) {
+      if (
+        typeof exceptionResponse === 'object' &&
+        'message' in exceptionResponse
+      ) {
         const response = exceptionResponse as any;
-        
+
         if (Array.isArray(response.message)) {
           message = response.message.join('; ');
         } else {
           message = response.message;
         }
-        
+
         if ('error' in response) {
           data = {
             error: response.error,
-            details: response.message
+            details: response.message,
           };
         }
       } else {
-        message = typeof exceptionResponse === 'string' 
-          ? exceptionResponse 
-          : exception.message;
+        message =
+          typeof exceptionResponse === 'string'
+            ? exceptionResponse
+            : exception.message;
       }
       code = status;
-    } 
+    }
     // 处理TypeORM的查询错误
     else if (exception instanceof QueryFailedError) {
       status = HttpStatus.BAD_REQUEST;
       code = (exception as any).errno || 400;
-      
+
       switch ((exception as any).code) {
         case 'ER_NO_DEFAULT_FOR_FIELD':
           message = '请填写必要的字段信息';
           data = {
             error: 'Missing Required Fields',
-            sqlMessage: (exception as any).sqlMessage
+            sqlMessage: (exception as any).sqlMessage,
           };
           break;
         case 'ER_DUP_ENTRY':
@@ -77,7 +87,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       message = exception.message;
       data = {
         error: exception.name,
-        stack: process.env.NODE_ENV === 'development' ? exception.stack : undefined
+        stack:
+          process.env.NODE_ENV === 'development' ? exception.stack : undefined,
       };
     }
 

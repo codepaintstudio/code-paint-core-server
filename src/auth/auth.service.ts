@@ -6,7 +6,7 @@ export class AuthService {
   constructor(
     private usersService: UsercenterService,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
   async signIn(username: string, pass: string): Promise<any> {
     console.log(username, pass);
@@ -21,7 +21,7 @@ export class AuthService {
     // const { userPassword, ...result } = data;
     const payload = { sub: data.userId, username: data.userName };
     const refreshPayload = { sub: data.userId };
-    
+
     return {
       code: 200,
       message: '登录成功',
