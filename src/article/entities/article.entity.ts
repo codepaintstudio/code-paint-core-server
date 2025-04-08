@@ -19,6 +19,13 @@ export class ArticleEntity {
     })
     articleId: number;
 
+    // 用户ID
+    @Column({
+        type: 'int',
+        name: 'article_user_id',
+    })
+    userId: number;
+
     // 文章标题
     @Column({
         type: 'varchar', length: 100, nullable: false,
