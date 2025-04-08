@@ -1,0 +1,20 @@
+server:
+  PORT: REPLACEYOURPORT
+
+kodo:
+  ACCESS_KEY: REPLACEYOURACCESSKEY
+  SECRET_KEY: REPLACEYOURSECRETKEY
+  BUCKET: REPLACEYOURBUCKET
+  BASE_URL: REPLACEYOURBASEURL
+
+database:
+  type: mysql
+  host: REPLACEYOURHOST
+  port: REPLACEYOURPORT
+  username: REPLACEYOURUSERNAME
+  password: REPLACEYOURPASSWORD
+  database: REPLACEYOURDATABASE
+  synchronize: true
+  retryDelay: 500
+  retryAttempts: 10
+  autoLoadEntities: true

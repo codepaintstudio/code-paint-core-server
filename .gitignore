@@ -9,7 +9,6 @@ lerna-debug.log*
 
 
 # yml
-*.yml
 application.dev.yml
 application.prod.yml
 
