@@ -4,7 +4,10 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
+
+import { ArticleEntity } from '../../article/entities/article.entity';
 
 @Entity('users') // 表名设置为 'users'
 export class UserEntity {
@@ -111,4 +114,8 @@ export class UserEntity {
     name: 'user_password',
   })
   userPassword: string; // 用户密码
+
+  // 关联文章，一个用户可以有多篇文章
+  @OneToMany(() => ArticleEntity, (article) => article.user)
+  articles: ArticleEntity[];
 }
