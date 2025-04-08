@@ -12,8 +12,8 @@ async function bootstrap() {
   try {
     const app = await NestFactory.create(AppModule);
     app.useGlobalInterceptors(new TransformInterceptor());
-    app.useGlobalFilters(new GlobalExceptionFilter()); 
-    app.useGlobalPipes(new ValidationPipe()); 
+    app.useGlobalFilters(new GlobalExceptionFilter());
+    app.useGlobalPipes(new ValidationPipe());
     app.setGlobalPrefix('api');
 
     await app.listen(PORT);
