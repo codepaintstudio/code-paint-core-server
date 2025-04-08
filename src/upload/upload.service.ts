@@ -61,4 +61,21 @@ export class UploadService {
       );
     });
   }
+
+  async getFiles(page: number = 1, limit: number = 10) {
+    const skip = (page - 1) * limit;
+    const [items, total] = await this.uploadRepository.findAndCount({
+      skip,
+      take: limit,
+      order: { createdAt: 'DESC' },
+    });
+
+    return {
+      items,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
 }
