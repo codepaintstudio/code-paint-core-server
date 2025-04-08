@@ -76,7 +76,6 @@ export class ArticleEntity {
         type: 'datetime',
         name: 'create_time',
         nullable: false,
-        default: () => 'CURRENT_TIMESTAMP',
     })
     createTime: Date;
 
@@ -85,7 +84,6 @@ export class ArticleEntity {
         type: 'datetime',
         name: 'update_time',
         nullable: false,
-        default: () => 'CURRENT_TIMESTAMP',
     })
     updateTime: Date;
 
