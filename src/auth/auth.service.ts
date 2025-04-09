@@ -10,11 +10,10 @@ export class AuthService {
   ) { }
 
   async signIn(username: string, pass: string): Promise<any> {
-    console.log(username, pass);
 
     const user = await this.usersService.findOne(username);
-    console.log(user);
 
+    // 直接使用用户密码进行验证
     if (user?.userPassword !== pass) {
       throw new UnauthorizedException();
     }
@@ -24,10 +23,10 @@ export class AuthService {
 
     return {
       access_token: await this.jwtService.signAsync(payload, {
-        expiresIn: '5h',
+        expiresIn: '7d',
       }),
       refresh_token: await this.jwtService.signAsync(refreshPayload, {
-        expiresIn: '2d',
+        expiresIn: '7d',
       }),
     };
   }
@@ -35,18 +34,17 @@ export class AuthService {
   async refreshToken(refresh_token: string) {
     try {
       const decoded = await this.jwtService.verifyAsync(refresh_token);
-      console.log(decoded);
 
       const user = await this.usersService.findOne(decoded.sub);
 
       const access_token = await this.jwtService.signAsync(
         { id: decoded.sub, userName: user.userName },
-        { expiresIn: '5h' },
+        { expiresIn: '7d' },
       );
 
       const newRefresh_token = await this.jwtService.signAsync(
         { id: decoded.sub },
-        { expiresIn: '2d' },
+        { expiresIn: '7d' },
       );
       return { refresh_token: newRefresh_token, access_token };
     } catch {
