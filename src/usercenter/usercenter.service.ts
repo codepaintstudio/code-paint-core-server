@@ -15,7 +15,7 @@ export class UsercenterService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-  ) {}
+  ) { }
   async createUser(createUsercenterDto: CreateUsercenterDto) {
     await validateOrReject(createUsercenterDto);
     const newUser = this.userRepository.create({
@@ -31,11 +31,7 @@ export class UsercenterService {
     // 删除密码字段
     const { userPassword, ...userWithoutPassword } = data;
     const newData = userWithoutPassword as UserEntity;
-    return {
-      status: 200,
-      data: newData,
-      message: '创建成功',
-    };
+    return newData
   }
 
   async findAll(page: number, limit: number) {
@@ -78,11 +74,7 @@ export class UsercenterService {
       throw new InternalServerErrorException(`未找到匹配 ${identifier} 的记录`);
     }
 
-    return {
-      data: user,
-      message: '查询成功',
-      status: 200,
-    };
+    return user
   }
 
   async update(id: number, updateUsercenterDto: UpdateUsercenterDto) {
@@ -99,11 +91,7 @@ export class UsercenterService {
     const { userPassword, ...userWithoutPassword } = newUser;
     newUser = userWithoutPassword as UserEntity;
 
-    return {
-      message: '更新成功',
-      status: 200,
-      data: newUser,
-    };
+    return newUser;
   }
 
   async remove(id: number) {
@@ -113,10 +101,6 @@ export class UsercenterService {
     }
     const data = await this.userRepository.delete(id);
 
-    return {
-      message: '删除成功',
-      status: 200,
-      data: data,
-    };
+    return data;
   }
 }
