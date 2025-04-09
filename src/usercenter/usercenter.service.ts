@@ -44,12 +44,39 @@ export class UsercenterService {
     if (total === 0) {
       throw new InternalServerErrorException(`数量为0`);
     }
-    // 删除密码字段
-    data.forEach((user) => {
-      const { userPassword, ...userWithoutPassword } = user;
-      user = userWithoutPassword as UserEntity;
-    });
+
     return { total, data, message: '查询成功', status: 200 };
+  }
+
+  /**
+   * 获取用户列表，支持分页和按角色筛选
+   * @param query 查询参数，包含页码、每页条数和角色
+   * @returns 返回用户列表和总数
+   */
+  async findUsersByRole(query: { page: number; limit: number; role?: number }) {
+    const { page, limit, role } = query;
+    const skip = (page - 1) * limit; // 计算跳过的记录数
+
+    // 创建查询构建器
+    const queryBuilder = this.userRepository.createQueryBuilder('user');
+
+    // 如果指定了角色，添加角色筛选条件
+    if (role) {
+      queryBuilder.andWhere('user.userAuth = :role', { role });
+    }
+
+    // 执行查询并获取结果
+    const [data, total] = await queryBuilder
+      .orderBy('user.createTime', 'DESC')
+      .skip(skip)
+      .take(limit)
+      .getManyAndCount();
+
+    if (total === 0) {
+      return { total: 0, data: [], message: '没有找到符合条件的用户', status: 200 };
+    }
+
+    return { total, data };
   }
 
   async findOne(identifier: string) {
