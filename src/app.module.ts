@@ -8,6 +8,7 @@ import { UsercenterModule } from './usercenter/usercenter.module';
 import { AuthModule } from './auth/auth.module';
 import { ArticleModule } from './article/article.module';
 import { UploadModule } from './upload/upload.module';
+import { RecruitmentModule } from './recruitment/recruitment.module';
 import { ResumeTemplateModule } from './resume-template/resume-template.module';
 const envFilePath = ['.env'];
 export const IS_DEV = process.env.RUNNING_ENV !== 'prod';
@@ -35,6 +36,7 @@ if (IS_DEV) {
     AuthModule,
     ArticleModule,
     UploadModule,
+    RecruitmentModule,
     ResumeTemplateModule,
   ],
   controllers: [AppController],

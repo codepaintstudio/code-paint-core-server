@@ -7,10 +7,15 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 import { UsercenterService } from './usercenter.service';
 import { CreateUsercenterDto } from './dto/create-usercenter.dto';
 import { UpdateUsercenterDto } from './dto/update-usercenter.dto';
+import { AuthGuard } from '../auth/auth.guard';
+import { AdminGuard } from '../auth/guards/admin.guard';
+import { QueryUsercenterDto } from './dto/query-usercenter.dto';
 
 @Controller('usercenter')
 export class UsercenterController {
@@ -26,21 +31,42 @@ export class UsercenterController {
     return this.usercenterService.findAll(page, limit);
   }
 
+  /**
+   * 获取用户列表，支持分页和按角色筛选
+   * 需要管理员权限
+   * 
+   * @param query 查询参数对象
+   * @returns 返回用户列表和总数
+   * 
+   * @example
+   * GET /usercenter/list?page=1&limit=10&role=1
+   */
+  @Get('list')
+  @UseGuards(AuthGuard, AdminGuard)
+  findUsersByRole(@Query() query: QueryUsercenterDto) {
+    // 确保传递给服务方法的是所需类型
+    const { page = 1, limit = 10, role } = query;
+    return this.usercenterService.findUsersByRole({ page, limit, role });
+  }
+
   @Get(':identifier')
   findOne(@Param('identifier') identifier: string) {
     return this.usercenterService.findOne(identifier);
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuard, AdminGuard)
   update(
     @Param('id') id: string,
     @Body() updateUsercenterDto: UpdateUsercenterDto,
+    @Request() req,
   ) {
     return this.usercenterService.update(+id, updateUsercenterDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  @UseGuards(AuthGuard, AdminGuard)
+  remove(@Param('id') id: string, @Request() req) {
     return this.usercenterService.remove(+id);
   }
 }
