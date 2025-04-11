@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity('resumetemplate')
 export class ResumeTemplateEntity {
   // id 自增
   @PrimaryGeneratedColumn({

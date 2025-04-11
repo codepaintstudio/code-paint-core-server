@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 
 import { ArticleEntity } from '../../article/entities/article.entity';
+import { ResumeEntity } from '../../resume/entities/resume.entity';
 
 @Entity('users') // 表名设置为 'users'
 export class UserEntity {
@@ -118,4 +119,8 @@ export class UserEntity {
   // 关联文章，一个用户可以有多篇文章
   @OneToMany(() => ArticleEntity, (article) => article.user)
   articles: ArticleEntity[];
+
+  // 关联简历，一个用户可以有多个简历
+  @OneToMany(() => ResumeEntity, (resume) => resume.user)
+  resumes: ResumeEntity[];
 }
