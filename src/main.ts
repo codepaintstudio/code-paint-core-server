@@ -16,6 +16,16 @@ async function bootstrap() {
     app.useGlobalPipes(new ValidationPipe());
     app.setGlobalPrefix('api');
 
+    // 配置CORS
+    app.enableCors({
+      origin: '*', // 允许所有来源
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // 允许的HTTP方法
+      credentials: true, // 允许携带凭证（如cookies）
+      allowedHeaders: 'Content-Type,Authorization', // 允许的头部字段
+      exposedHeaders: 'Content-Type,Authorization', // 暴露的头部字段
+      maxAge: 3600, // 预检请求的缓存时间，单位为秒
+    });
+
     await app.listen(PORT);
     console.log('正在监听端口：', PORT);
   } catch (error) {
