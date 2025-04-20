@@ -49,6 +49,24 @@ export class RecruitmentEntity {
     })
     officialFeedbackInfromation: string;
 
+    // email
+    @Column({
+        name: "email",
+        nullable: true,
+        type: "varchar",
+        default: "",
+    })
+    email: string;
+
+    // 电话号
+    @Column({
+        name: "phone",
+        nullable: true,
+        type: "varchar",
+        default: "",
+    })
+    phone: string;
+
     // 简历文件地址
     @Column({
         name: "resume_file_path",

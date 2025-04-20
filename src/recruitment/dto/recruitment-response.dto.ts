@@ -56,6 +56,16 @@ export class RecruitmentResponseDto {
    */
   updateTime: Date;
 
+  /**
+   * 邮件地址
+   */
+  email: string;
+
+  /**
+   * 电话号码
+   */
+  phone: string;
+
   constructor(recruitment: RecruitmentEntity) {
     this.officialResumeId = recruitment.officialResumeId;
     this.userId = recruitment.userId;
@@ -67,6 +77,8 @@ export class RecruitmentResponseDto {
     this.resumeFilePath = recruitment.resumeFilePath;
     this.createTime = recruitment.createTime;
     this.updateTime = recruitment.updateTime;
+    this.email = recruitment.email;
+    this.phone = recruitment.phone;
   }
 
   /**

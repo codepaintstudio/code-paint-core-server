@@ -3,6 +3,7 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  IsEmail,
 } from 'class-validator';
 
 /**
@@ -14,6 +15,21 @@ export class CreateRecruitmentDto {
    */
   @IsNotEmpty({ message: '用户ID不能为空' })
   userId: number;
+
+  /**
+   * 邮件地址
+   */
+  @IsString({ message: '邮件地址必须是字符串' })
+  @IsNotEmpty({ message: '邮件地址不能为空' })
+  @IsEmail({}, { message: '邮件地址格式不正确' })
+  email: string;
+
+  /**
+   * 电话号
+   */
+  @IsString({ message: '手机号必须是字符串' })
+  @IsNotEmpty({ message: '手机号不能为空' })
+  phone: string;
 
   /**
    * 求职类型
