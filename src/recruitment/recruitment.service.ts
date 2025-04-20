@@ -55,6 +55,8 @@ export class RecruitmentService {
       status,
       startTime,
       endTime,
+      email,
+      phone,
     } = query;
     const skip = (page - 1) * limit;
 
@@ -69,6 +71,16 @@ export class RecruitmentService {
     // 根据简历状态过滤
     if (status) {
       queryBuilder.andWhere('recruitment.officialResumeStatus = :status', { status });
+    }
+
+    // 根据邮箱过滤
+    if (email) {
+      queryBuilder.andWhere('recruitment.email LIKE :email', { email: `%${email}%` });
+    }
+
+    // 根据电话过滤
+    if (phone) {
+      queryBuilder.andWhere('recruitment.phone LIKE :phone', { phone: `%${phone}%` });
     }
 
     // 根据时间范围过滤

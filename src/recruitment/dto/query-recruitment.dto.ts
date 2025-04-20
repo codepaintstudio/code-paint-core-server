@@ -4,6 +4,8 @@ import {
   Min,
   Max,
   IsDateString,
+  IsString,
+  IsEmail,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -65,4 +67,19 @@ export class QueryRecruitmentDto {
   @IsOptional()
   @IsDateString({}, { message: '结束时间格式不正确，应为ISO格式的日期字符串' })
   endTime?: string;
+
+  /**
+   * 邮件地址（支持模糊查询）
+   */
+  @IsOptional()
+  @IsString({ message: '邮件地址必须是字符串' })
+  @IsEmail({}, { message: '邮件地址格式不正确' })
+  email?: string;
+
+  /**
+   * 电话号码（支持模糊查询）
+   */
+  @IsOptional()
+  @IsString({ message: '电话号码必须是字符串' })
+  phone?: string;
 }

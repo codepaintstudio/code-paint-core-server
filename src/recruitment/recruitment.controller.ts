@@ -42,6 +42,8 @@ export class RecruitmentController {
    * Body: {
    *   "userId": 1,
    *   "recrType": 1,
+   *   "email": "example@example.com",
+   *   "phone": "13800138000",
    *   "resumeFilePath": "/uploads/resumes/resume.pdf"
    * }
    */
