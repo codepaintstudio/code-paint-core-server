@@ -22,6 +22,7 @@ export class AuthService {
     const refreshPayload = { sub: user.userId };
 
     return {
+      userId: user.userId,
       access_token: await this.jwtService.signAsync(payload, {
         expiresIn: '7d',
       }),
