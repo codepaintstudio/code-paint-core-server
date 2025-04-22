@@ -33,7 +33,7 @@ export class UploadService {
   async uploadFile(file: Express.Multer.File) {
     const formUploader = new qiniu.form_up.FormUploader(this.config);
     const putExtra = new qiniu.form_up.PutExtra();
-    
+
     return new Promise<Upload>((resolve, reject) => {
       formUploader.put(
         this.uploadToken,
@@ -41,21 +41,46 @@ export class UploadService {
         file.buffer,
         putExtra,
         async (err, body, info) => {
-          if (err) {
-            reject(err);
-            return;
-          }
-          if (info.statusCode === 200) {
+          try {
+            // 检查是否有错误
+            if (err) {
+              console.error('Upload error:', err);
+              return reject(
+                new Error('File upload failed due to an internal error.'),
+              );
+            }
+
+            // 检查 HTTP 状态码是否为成功
+            if (info.statusCode !== 200) {
+              console.error('Upload failed with status code:', info.statusCode);
+              return reject(
+                new Error(
+                  `File upload failed with status code: ${info.statusCode}`,
+                ),
+              );
+            } // 获取基础 URL 并构造上传对象
             const baseUrl = this.configService.get('kodo.BASE_URL');
             const upload = new Upload();
             upload.hash = body.hash;
             upload.key = body.key;
             upload.url = `${baseUrl}/${body.key}`;
-            
-            const savedUpload = await this.uploadRepository.save(upload);
-            resolve(savedUpload);
-          } else {
-            reject(new Error('Upload failed'));
+
+            // 将上传信息保存到数据库
+            try {
+              const savedUpload = await this.uploadRepository.save(upload);
+              resolve(savedUpload); // 成功时返回保存的对象
+            } catch (dbError) {
+              console.error('Database save error:', dbError);
+              reject(
+                new Error('Failed to save upload information to the database.'),
+              );
+            }
+          } catch (unexpectedError) {
+            // 捕获任何意外错误
+            console.error('Unexpected error during upload:', unexpectedError);
+            reject(
+              new Error('An unexpected error occurred during file upload.'),
+            );
           }
         },
       );
