@@ -1,4 +1,4 @@
-import { IsEmail, IsString, Length, Matches } from 'class-validator';
+import { IsEmail, IsString, Length, Matches, IsOptional, IsInt, Min, Max } from 'class-validator';
 
 export class CreateUsercenterDto {
   @IsString()
@@ -18,4 +18,10 @@ export class CreateUsercenterDto {
 
   @IsEmail({}, { message: '无效的邮箱格式' })
   userEmail: string; // 用户邮箱
+
+  @IsOptional()
+  @IsInt({ message: '性别必须是整数' })
+  @Min(0, { message: '性别值必须大于等于0' })
+  @Max(2, { message: '性别值必须小于等于2' })
+  sex?: number; // 性别，0未知，1男，2女
 }
