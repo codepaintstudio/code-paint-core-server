@@ -74,9 +74,9 @@ export class UserEntity {
   @Column({
     type: 'int',
     name: 'user_resume_id',
-    nullable: false,
+    nullable: true,
   })
-  userResumeId: number; // 用户简历 ID
+  userResumeId?: number; // 用户简历 ID
 
   @Column({
     type: 'int',
@@ -89,9 +89,9 @@ export class UserEntity {
   @Column({
     type: 'int',
     name: 'user_email_id',
-    nullable: false,
+    nullable: true,
   })
-  userEmailId: number; // 用户邮箱 ID
+  userEmailId?: number; // 用户邮箱 ID
 
   @Column({
     type: 'varchar',

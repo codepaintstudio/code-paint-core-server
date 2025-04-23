@@ -17,21 +17,51 @@ export class UsercenterService {
     private readonly userRepository: Repository<UserEntity>,
   ) { }
   async createUser(createUsercenterDto: CreateUsercenterDto) {
-    await validateOrReject(createUsercenterDto);
-    const newUser = this.userRepository.create({
-      ...createUsercenterDto,
-      createTime: new Date(), // 自动设置创建时间
-      updateTime: new Date(), // 自动设置更新时间
+    // 验证密码是否匹配
+    if (createUsercenterDto.userPassword !== createUsercenterDto.confirmPassword) {
+      throw new BadRequestException('两次输入的密码不匹配');
+    }
+
+    // 检查用户名是否已存在
+    const existingUser = await this.userRepository.findOne({
+      where: [{ userName: createUsercenterDto.userName }],
     });
+    if (existingUser) {
+      throw new BadRequestException('用户名已存在');
+    }
+
+    // 检查邮箱是否已存在
+    const existingEmail = await this.userRepository.findOne({
+      where: [{ userEmail: createUsercenterDto.userEmail }],
+    });
+    if (existingEmail) {
+      throw new BadRequestException('邮箱已被注册');
+    }
+
+    await validateOrReject(createUsercenterDto);
+
+    // 创建新用户，设置默认值
+    const { confirmPassword, ...userData } = createUsercenterDto;
+    const newUser = this.userRepository.create({
+      ...userData,
+      userAuth: 1, // 默认为普通用户
+      userStatus: 1, // 默认为正常状态
+      createTime: new Date(),
+      updateTime: new Date(),
+      createBy: createUsercenterDto.userName, // 创建人为用户自己
+      updateBy: createUsercenterDto.userName, // 更新人为用户自己
+    });
+
     if (!newUser) {
       throw new BadRequestException('创建失败,请检查参数');
     }
+
     const data = await this.userRepository.save(newUser);
 
     // 删除密码字段
     const { userPassword, ...userWithoutPassword } = data;
     const newData = userWithoutPassword as UserEntity;
-    return newData
+    return newData;
   }
 
   async findAll(page: number, limit: number) {
