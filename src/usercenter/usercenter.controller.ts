@@ -19,7 +19,7 @@ import { QueryUsercenterDto } from './dto/query-usercenter.dto';
 
 @Controller('usercenter')
 export class UsercenterController {
-  constructor(private readonly usercenterService: UsercenterService) {}
+  constructor(private readonly usercenterService: UsercenterService) { }
 
   @Post()
   createUser(@Body() createUsercenterDto: CreateUsercenterDto) {
@@ -43,15 +43,23 @@ export class UsercenterController {
    */
   @Get('list')
   @UseGuards(AuthGuard, AdminGuard)
-  findUsersByRole(@Query() query: QueryUsercenterDto) {
+  async findUsersByRole(@Query() query: QueryUsercenterDto) {
     // 确保传递给服务方法的是所需类型
     const { page = 1, limit = 10, role } = query;
-    return this.usercenterService.findUsersByRole({ page, limit, role });
+    const data = await this.usercenterService.findUsersByRole({ page, limit, role });
+    // 删除密码字段
+    const { data: users, ...rest } = data;
+    return { ...rest, data: users.map(user => ({
+      ...user,
+      userPassword: undefined
+    })) };
   }
 
   @Get(':identifier')
-  findOne(@Param('identifier') identifier: string) {
-    return this.usercenterService.findOne(identifier);
+  async findOne(@Param('identifier') identifier: string) {
+    const data = await this.usercenterService.findOne(identifier);
+    const { userPassword, ...userWithoutPassword } = data;
+    return userWithoutPassword;
   }
 
   @Patch(':id')
