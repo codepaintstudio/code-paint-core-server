@@ -39,4 +39,15 @@ export class QueryUsercenterDto {
   @Min(1, { message: '用户角色最小值为1' })
   @Max(2, { message: '用户角色最大值为2' })
   role?: number;
+
+  /**
+   * 性别
+   * 0: 未知, 1: 男, 2: 女
+   */
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt({ message: '性别必须是整数' })
+  @Min(0, { message: '性别值最小为0' })
+  @Max(2, { message: '性别值最大为2' })
+  sex?: number;
 }

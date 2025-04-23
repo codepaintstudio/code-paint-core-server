@@ -46,6 +46,7 @@ export class UsercenterService {
       ...userData,
       userAuth: 1, // 默认为普通用户
       userStatus: 1, // 默认为正常状态
+      sex: userData.sex || 0, // 默认为0（未知）
       createTime: new Date(),
       updateTime: new Date(),
       createBy: createUsercenterDto.userName, // 创建人为用户自己
@@ -83,8 +84,8 @@ export class UsercenterService {
    * @param query 查询参数，包含页码、每页条数和角色
    * @returns 返回用户列表和总数
    */
-  async findUsersByRole(query: { page: number; limit: number; role?: number }) {
-    const { page, limit, role } = query;
+  async findUsersByRole(query: { page: number; limit: number; role?: number; sex?: number }) {
+    const { page, limit, role, sex } = query;
     const skip = (page - 1) * limit; // 计算跳过的记录数
 
     // 创建查询构建器
@@ -93,6 +94,11 @@ export class UsercenterService {
     // 如果指定了角色，添加角色筛选条件
     if (role) {
       queryBuilder.andWhere('user.userAuth = :role', { role });
+    }
+
+    // 如果指定了性别，添加性别筛选条件
+    if (sex !== undefined) {
+      queryBuilder.andWhere('user.sex = :sex', { sex });
     }
 
     // 执行查询并获取结果

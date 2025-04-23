@@ -110,6 +110,14 @@ export class UserEntity {
   userName: string; // 用户名
 
   @Column({
+    type: 'int',
+    name: 'sex',
+    nullable: false,
+    default: 0, // 默认0未知，1男，2女
+  })
+  sex: number; // 性别
+
+  @Column({
     type: 'varchar',
     length: 30,
     name: 'user_password',
