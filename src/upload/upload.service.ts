@@ -33,7 +33,17 @@ export class UploadService {
   async uploadFile(file: Express.Multer.File) {
     const formUploader = new qiniu.form_up.FormUploader(this.config);
     const putExtra = new qiniu.form_up.PutExtra();
+    
+    // 验证配置是否存在
+    const accessKey = this.configService.get('kodo.ACCESS_KEY');
+    const secretKey = this.configService.get('kodo.SECRET_KEY');
+    const bucket = this.configService.get('kodo.BUCKET');
+    const baseUrl = this.configService.get('kodo.BASE_URL');
 
+    if (!accessKey || !secretKey || !bucket || !baseUrl) {
+      throw new Error('Missing required Qiniu configuration. Please check your configuration file.');
+    }
+    
     return new Promise<Upload>((resolve, reject) => {
       formUploader.put(
         this.uploadToken,
