@@ -119,7 +119,11 @@ export class RecruitmentController {
     @Body() updateRecruitmentDto: UpdateRecruitmentDto,
     @Request() req,
   ): Promise<RecruitmentResponseDto> {
-    return this.recruitmentService.update(+id, updateRecruitmentDto, req.user.sub);
+    return this.recruitmentService.update(
+      +id,
+      updateRecruitmentDto,
+      req.user.sub,
+    );
   }
 
   /**

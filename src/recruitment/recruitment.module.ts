@@ -6,10 +6,8 @@ import { RecruitmentEntity } from './entities/recruiment.entity';
 import { UserEntity } from '../usercenter/entities/usercenter.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([RecruitmentEntity, UserEntity]),
-  ],
+  imports: [TypeOrmModule.forFeature([RecruitmentEntity, UserEntity])],
   controllers: [RecruitmentController],
-  providers: [RecruitmentService]
+  providers: [RecruitmentService],
 })
 export class RecruitmentModule {}

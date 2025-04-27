@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between } from 'typeorm';
 import { RecruitmentEntity } from './entities/recruiment.entity';
@@ -61,7 +65,8 @@ export class RecruitmentService {
     const skip = (page - 1) * limit;
 
     // 创建查询构建器
-    const queryBuilder = this.recruitmentRepository.createQueryBuilder('recruitment');
+    const queryBuilder =
+      this.recruitmentRepository.createQueryBuilder('recruitment');
 
     // 根据求职类型过滤
     if (type) {
@@ -70,17 +75,23 @@ export class RecruitmentService {
 
     // 根据简历状态过滤
     if (status) {
-      queryBuilder.andWhere('recruitment.officialResumeStatus = :status', { status });
+      queryBuilder.andWhere('recruitment.officialResumeStatus = :status', {
+        status,
+      });
     }
 
     // 根据邮箱过滤
     if (email) {
-      queryBuilder.andWhere('recruitment.email LIKE :email', { email: `%${email}%` });
+      queryBuilder.andWhere('recruitment.email LIKE :email', {
+        email: `%${email}%`,
+      });
     }
 
     // 根据电话过滤
     if (phone) {
-      queryBuilder.andWhere('recruitment.phone LIKE :phone', { phone: `%${phone}%` });
+      queryBuilder.andWhere('recruitment.phone LIKE :phone', {
+        phone: `%${phone}%`,
+      });
     }
 
     // 根据时间范围过滤
@@ -162,7 +173,9 @@ export class RecruitmentService {
     const isAdmin = user.userAuth === 2;
 
     if (!isAdmin) {
-      throw new ForbiddenException('您没有权限修改这份简历，只有管理员可以进行此操作');
+      throw new ForbiddenException(
+        '您没有权限修改这份简历，只有管理员可以进行此操作',
+      );
     }
 
     const updatedRecruitment = await this.recruitmentRepository.save({
@@ -204,7 +217,9 @@ export class RecruitmentService {
     const isAdmin = user.userAuth === 2;
 
     if (!isAdmin) {
-      throw new ForbiddenException('您没有权限删除这份简历，只有管理员可以进行此操作');
+      throw new ForbiddenException(
+        '您没有权限删除这份简历，只有管理员可以进行此操作',
+      );
     }
 
     // 删除简历
