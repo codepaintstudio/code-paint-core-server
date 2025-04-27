@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Query,
+  Request,
 } from '@nestjs/common';
 import { ResumeTemplateService } from './resume-template.service';
 import { CreateResumeTemplateDto } from './dto/create-resume-template.dto';
@@ -35,8 +36,14 @@ export class ResumeTemplateController {
    */
   @Post()
   @UseGuards(AuthGuard)
-  create(@Body() createResumeTemplateDto: CreateResumeTemplateDto) {
-    return this.resumeTemplateService.create(createResumeTemplateDto);
+  create(
+    @Body() createResumeTemplateDto: CreateResumeTemplateDto,
+    @Request() req,
+  ) {
+    return this.resumeTemplateService.create(
+      createResumeTemplateDto,
+      req.user.sub,
+    );
   }
 
   /**
