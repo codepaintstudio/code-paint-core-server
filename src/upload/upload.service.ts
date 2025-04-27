@@ -23,6 +23,8 @@ export class UploadService {
       this.configService.get('kodo.SECRET_KEY'),
     );
     this.config = new qiniu.conf.Config();
+    // 设置存储区域
+    this.config.zone = qiniu.zone.Zone_z0; // 根据你的空间所在的区域选择：华东(z0)、华北(z1)、华南(z2)、北美(na0)等
     this.bucketManager = new qiniu.rs.BucketManager(this.mac, this.config);
     const putPolicy = new qiniu.rs.PutPolicy({
       scope: this.configService.get('kodo.BUCKET'),
