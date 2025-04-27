@@ -72,7 +72,9 @@ export class RecruitmentResponseDto {
     this.recrType = recruitment.recrType;
     this.recrTypeText = this.getRecrTypeText(recruitment.recrType);
     this.officialResumeStatus = recruitment.officialResumeStatus;
-    this.officialResumeStatusText = this.getStatusText(recruitment.officialResumeStatus);
+    this.officialResumeStatusText = this.getStatusText(
+      recruitment.officialResumeStatus,
+    );
     this.officialFeedbackInfromation = recruitment.officialFeedbackInfromation;
     this.resumeFilePath = recruitment.resumeFilePath;
     this.createTime = recruitment.createTime;

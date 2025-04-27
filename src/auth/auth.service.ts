@@ -7,10 +7,9 @@ export class AuthService {
   constructor(
     private usersService: UsercenterService,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
   async signIn(username: string, pass: string): Promise<any> {
-
     const user = await this.usersService.findOne(username);
 
     // 直接使用用户密码进行验证

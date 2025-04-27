@@ -15,10 +15,12 @@ export class UsercenterService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-  ) { }
+  ) {}
   async createUser(createUsercenterDto: CreateUsercenterDto) {
     // 验证密码是否匹配
-    if (createUsercenterDto.userPassword !== createUsercenterDto.confirmPassword) {
+    if (
+      createUsercenterDto.userPassword !== createUsercenterDto.confirmPassword
+    ) {
       throw new BadRequestException('两次输入的密码不匹配');
     }
 
@@ -84,7 +86,12 @@ export class UsercenterService {
    * @param query 查询参数，包含页码、每页条数和角色
    * @returns 返回用户列表和总数
    */
-  async findUsersByRole(query: { page: number; limit: number; role?: number; sex?: number }) {
+  async findUsersByRole(query: {
+    page: number;
+    limit: number;
+    role?: number;
+    sex?: number;
+  }) {
     const { page, limit, role, sex } = query;
     const skip = (page - 1) * limit; // 计算跳过的记录数
 
@@ -109,7 +116,12 @@ export class UsercenterService {
       .getManyAndCount();
 
     if (total === 0) {
-      return { total: 0, data: [], message: '没有找到符合条件的用户', status: 200 };
+      return {
+        total: 0,
+        data: [],
+        message: '没有找到符合条件的用户',
+        status: 200,
+      };
     }
 
     return { total, data };
@@ -137,7 +149,7 @@ export class UsercenterService {
       throw new InternalServerErrorException(`未找到匹配 ${identifier} 的记录`);
     }
 
-    return user
+    return user;
   }
 
   async update(id: number, updateUsercenterDto: UpdateUsercenterDto) {

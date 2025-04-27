@@ -19,7 +19,7 @@ import { QueryUsercenterDto } from './dto/query-usercenter.dto';
 
 @Controller('usercenter')
 export class UsercenterController {
-  constructor(private readonly usercenterService: UsercenterService) { }
+  constructor(private readonly usercenterService: UsercenterService) {}
 
   @Post()
   createUser(@Body() createUsercenterDto: CreateUsercenterDto) {
@@ -34,10 +34,10 @@ export class UsercenterController {
   /**
    * 获取用户列表，支持分页和按角色筛选
    * 需要管理员权限
-   * 
+   *
    * @param query 查询参数对象
    * @returns 返回用户列表和总数
-   * 
+   *
    * @example
    * GET /usercenter/list?page=1&limit=10&role=1
    */
@@ -46,13 +46,20 @@ export class UsercenterController {
   async findUsersByRole(@Query() query: QueryUsercenterDto) {
     // 确保传递给服务方法的是所需类型
     const { page = 1, limit = 10, role } = query;
-    const data = await this.usercenterService.findUsersByRole({ page, limit, role });
+    const data = await this.usercenterService.findUsersByRole({
+      page,
+      limit,
+      role,
+    });
     // 删除密码字段
     const { data: users, ...rest } = data;
-    return { ...rest, data: users.map(user => ({
-      ...user,
-      userPassword: undefined
-    })) };
+    return {
+      ...rest,
+      data: users.map((user) => ({
+        ...user,
+        userPassword: undefined,
+      })),
+    };
   }
 
   @Get(':identifier')

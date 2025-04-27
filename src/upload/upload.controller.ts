@@ -1,4 +1,12 @@
-import { Controller, Post, Get, UploadedFile, UseInterceptors, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  UploadedFile,
+  UseInterceptors,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from './upload.service';
 import { Upload } from './entities/upload.entity';

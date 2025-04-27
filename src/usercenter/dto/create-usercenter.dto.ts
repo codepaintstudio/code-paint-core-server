@@ -1,4 +1,13 @@
-import { IsEmail, IsString, Length, Matches, IsOptional, IsInt, Min, Max } from 'class-validator';
+import {
+  IsEmail,
+  IsString,
+  Length,
+  Matches,
+  IsOptional,
+  IsInt,
+  Min,
+  Max,
+} from 'class-validator';
 
 export class CreateUsercenterDto {
   @IsString()
