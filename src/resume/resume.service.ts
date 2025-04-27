@@ -48,12 +48,24 @@ export class ResumeService {
    * @param query - 查询参数，包含分页信息
    * @returns 返回所有简历信息和总数
    */
-  async findAll(query: { page?: number; limit?: number }) {
+  async findAll(
+    resumeUserId: number,
+    query: { page?: number; limit?: number },
+  ) {
+    // 获取用户信息
+    const user = await this.userRepository.findOne({
+      where: { userId: resumeUserId },
+    });
+    if (!user) {
+      throw new NotFoundException('用户不存在');
+    }
     const { page = 1, limit = 10 } = query;
     const [items, total] = await this.resumeRepository.findAndCount({
+      where: { resumeUserId },
       skip: (page - 1) * limit,
       take: limit,
     });
+    console.log('items', items);
     return {
       items,
       total,

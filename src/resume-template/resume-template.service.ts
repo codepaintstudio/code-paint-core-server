@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { ResumeTemplateEntity } from './entities/resume-template.entity';
 import { CreateResumeTemplateDto } from './dto/create-resume-template.dto';
 import { UpdateResumeTemplateDto } from './dto/update-resume-template.dto';
+import { UserEntity } from '../usercenter/entities/usercenter.entity';
 
 @Injectable()
 export class ResumeTemplateService {
@@ -14,6 +15,8 @@ export class ResumeTemplateService {
   constructor(
     @InjectRepository(ResumeTemplateEntity)
     private readonly resumeTemplateRepository: Repository<ResumeTemplateEntity>,
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
   ) {}
 
   /**
@@ -21,7 +24,18 @@ export class ResumeTemplateService {
    * @param createResumeTemplateDto - 创建简历模板的请求体
    * @returns 返回创建的简历模板的信息
    */
-  async create(createResumeTemplateDto: CreateResumeTemplateDto) {
+  async create(createResumeTemplateDto: CreateResumeTemplateDto, id: number) {
+    // 检查用户是否存在
+    const user = await this.userRepository.findOne({
+      where: { userId: id },
+    });
+    console.log('user', user);
+    if (!user) {
+      throw new NotFoundException(`用户ID ${id} 不存在`);
+    }
+    if (user.userAuth !== 2) {
+      throw new NotFoundException(`用户无权限创建简历模板`);
+    }
     const ResumeTemplate = this.resumeTemplateRepository.create({
       ...createResumeTemplateDto,
     });

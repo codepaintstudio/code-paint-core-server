@@ -56,8 +56,12 @@ export class ResumeController {
    */
   @Get()
   @UseGuards(AuthGuard)
-  findAll(@Query('page') page?: number, @Query('limit') limit?: number) {
-    return this.resumeService.findAll({
+  findAll(
+    @Request() req,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
+    return this.resumeService.findAll(req.user.sub, {
       page,
       limit,
     });
