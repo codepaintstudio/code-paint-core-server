@@ -9,6 +9,7 @@ import {
   Query,
   UseGuards,
   Request,
+  ForbiddenException,
 } from '@nestjs/common';
 import { UsercenterService } from './usercenter.service';
 import { CreateUsercenterDto } from './dto/create-usercenter.dto';
@@ -70,11 +71,10 @@ export class UsercenterController {
   }
 
   @Patch(':id')
-  @UseGuards(AuthGuard, AdminGuard)
-  update(
+  @UseGuards(AuthGuard)
+  async update(
     @Param('id') id: string,
     @Body() updateUsercenterDto: UpdateUsercenterDto,
-    @Request() req,
   ) {
     return this.usercenterService.update(+id, updateUsercenterDto);
   }
