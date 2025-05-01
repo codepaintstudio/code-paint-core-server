@@ -2,6 +2,8 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
+  ConflictException
 } from '@nestjs/common';
 import { CreateUsercenterDto } from './dto/create-usercenter.dto';
 import { UpdateUsercenterDto } from './dto/update-usercenter.dto';
@@ -29,7 +31,7 @@ export class UsercenterService {
       where: [{ userName: createUsercenterDto.userName }],
     });
     if (existingUser) {
-      throw new BadRequestException('用户名已存在');
+      throw new ConflictException('用户名已存在');
     }
 
     // 检查邮箱是否已存在
@@ -37,7 +39,7 @@ export class UsercenterService {
       where: [{ userEmail: createUsercenterDto.userEmail }],
     });
     if (existingEmail) {
-      throw new BadRequestException('邮箱已被注册');
+      throw new ConflictException('邮箱已被注册');
     }
 
     await validateOrReject(createUsercenterDto);
@@ -74,8 +76,9 @@ export class UsercenterService {
       take: limit, // 每页记录数
       order: { createTime: 'DESC' }, // 按创建时间倒序排列
     });
+    // 如果没有数据，返回空数组，不抛出异常
     if (total === 0) {
-      throw new InternalServerErrorException(`数量为0`);
+      return { total: 0, data: [], message: '没有数据', status: 200 };
     }
 
     return { total, data, message: '查询成功', status: 200 };
@@ -146,7 +149,7 @@ export class UsercenterService {
       });
     }
     if (!user) {
-      throw new InternalServerErrorException(`未找到匹配 ${identifier} 的记录`);
+      throw new NotFoundException(`未找到匹配 ${identifier} 的记录`);
     }
 
     return user;
@@ -155,7 +158,7 @@ export class UsercenterService {
   async update(id: number, updateUsercenterDto: UpdateUsercenterDto) {
     const user = await this.userRepository.findOneBy({ userId: id });
     if (!user) {
-      throw new InternalServerErrorException(`用户 ID 为 ${id} 的记录不存在`);
+      throw new NotFoundException(`用户 ID 为 ${id} 的记录不存在`);
     }
 
     // 合并更新数据
@@ -172,7 +175,7 @@ export class UsercenterService {
   async remove(id: number) {
     const user = await this.userRepository.findOneBy({ userId: id });
     if (!user) {
-      throw new InternalServerErrorException(`用户 ID 为 ${id} 的记录不存在`);
+      throw new NotFoundException(`用户 ID 为 ${id} 的记录不存在`);
     }
     const data = await this.userRepository.delete(id);
 
