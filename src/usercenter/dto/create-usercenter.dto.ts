@@ -33,4 +33,8 @@ export class CreateUsercenterDto {
   @Min(0, { message: '性别值必须大于等于0' })
   @Max(2, { message: '性别值必须小于等于2' })
   sex?: number; // 性别，0未知，1男，2女
+
+  @IsOptional()
+  @IsString()
+  avatar?: string; // 用户头像
 }

@@ -124,6 +124,13 @@ export class UserEntity {
   })
   userPassword: string; // 用户密码
 
+  @Column({
+    type: 'varchar',
+    name: 'avatar',
+    default: ''
+  })
+  avatar: string; // 头像
+
   // 关联文章，一个用户可以有多篇文章
   @OneToMany(() => ArticleEntity, (article) => article.user)
   articles: ArticleEntity[];
