@@ -3,7 +3,7 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
-  ConflictException
+  ConflictException,
 } from '@nestjs/common';
 import { CreateUsercenterDto } from './dto/create-usercenter.dto';
 import { UpdateUsercenterDto } from './dto/update-usercenter.dto';
@@ -17,7 +17,7 @@ export class UsercenterService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-  ) { }
+  ) {}
   async createUser(createUsercenterDto: CreateUsercenterDto) {
     // 验证密码是否匹配
     if (

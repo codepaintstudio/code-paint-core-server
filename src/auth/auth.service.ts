@@ -1,5 +1,10 @@
 import { UsercenterService } from './../usercenter/usercenter.service';
-import { Injectable, UnauthorizedException, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  UnauthorizedException,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -46,7 +51,7 @@ export class AuthService {
       if (!refresh_token || typeof refresh_token !== 'string') {
         throw new BadRequestException('无效的refresh_token格式');
       }
-      
+
       // 验证token
       const decoded = await this.jwtService.verifyAsync(refresh_token);
 
@@ -68,7 +73,10 @@ export class AuthService {
       return { refresh_token: newRefresh_token, access_token };
     } catch (error) {
       // 区分不同类型的错误
-      if (error instanceof BadRequestException || error instanceof NotFoundException) {
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException
+      ) {
         throw error; // 重新抛出原始错误
       }
       // JWT相关错误统一处理为401未授权

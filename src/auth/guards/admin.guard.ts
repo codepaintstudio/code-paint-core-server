@@ -27,7 +27,7 @@ export class AdminGuard implements CanActivate {
     const userInfo = await this.usercenterService.findOne(user.sub);
 
     // 检查用户是否具有管理员权限 (userAuth === 2)
-    if (userInfo.userAuth !== 2) {
+    if (userInfo.userAuth !== 2 || userInfo.userAuth !== 3 ) {
       throw new ForbiddenException('需要管理员权限');
     }
 
