@@ -43,6 +43,7 @@ export class ArticleService {
     const article = this.articleRepository.create({
       ...createArticleDto,
       userId,
+      isActive: false, // 创建时默认为未激活状态
     });
     const savedArticle = await this.articleRepository.save(article);
     return new ArticleResponseDto(savedArticle);
@@ -64,6 +65,7 @@ export class ArticleService {
       articleAuthor,
       startTime,
       endTime,
+      showAll = false, // 默认只显示激活的文章
     } = query;
     const skip = (page - 1) * limit;
 
@@ -93,6 +95,14 @@ export class ArticleService {
           endTime,
         },
       );
+    }
+
+    // 如果不是显示所有，只显示激活的文章
+    if (!showAll) {
+      queryBuilder.andWhere('article.isActive = :isActive', { isActive: true })
+        .andWhere('(article.startTime IS NULL OR article.startTime <= :now)')
+        .andWhere('(article.endTime IS NULL OR article.endTime >= :now)')
+        .setParameter('now', new Date());
     }
 
     // 执行查询并获取结果
@@ -168,6 +178,23 @@ export class ArticleService {
 
     if (!isAdmin && !isAuthor) {
       throw new ForbiddenException('您没有权限修改这篇文章');
+    }
+
+    // 如果要修改文章状态、开始时间或结束时间，必须是管理员
+    if ((updateArticleDto.isActive !== undefined || 
+         updateArticleDto.startTime !== undefined || 
+         updateArticleDto.endTime !== undefined) && 
+        !isAdmin) {
+      throw new ForbiddenException('只有管理员可以修改文章状态和时间设置');
+    }
+
+    // 如果设置了开始和结束时间，验证时间范围
+    if (updateArticleDto.startTime && updateArticleDto.endTime) {
+      const startTime = new Date(updateArticleDto.startTime);
+      const endTime = new Date(updateArticleDto.endTime);
+      if (startTime >= endTime) {
+        throw new ForbiddenException('结束时间必须晚于开始时间');
+      }
     }
 
     const updatedArticle = await this.articleRepository.save({

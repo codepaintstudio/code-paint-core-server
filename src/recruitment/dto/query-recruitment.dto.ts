@@ -82,4 +82,11 @@ export class QueryRecruitmentDto {
   @IsOptional()
   @IsString({ message: '电话号码必须是字符串' })
   phone?: string;
+
+  /**
+   * 投递者姓名（支持模糊查询）
+   */
+  @IsOptional()
+  @IsString({ message: '姓名必须是字符串' })
+  userName?: string;
 }
