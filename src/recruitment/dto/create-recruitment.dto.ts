@@ -45,4 +45,11 @@ export class CreateRecruitmentDto {
   @IsNotEmpty({ message: '简历文件地址不能为空' })
   @IsOptional()
   resumeFilePath?: string;
+
+  /**
+   * 投递者姓名
+   */
+  @IsString({ message: '姓名必须是字符串' })
+  @IsNotEmpty({ message: '姓名不能为空' })
+  userName: string;
 }

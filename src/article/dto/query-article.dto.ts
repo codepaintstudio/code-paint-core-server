@@ -3,6 +3,7 @@ import {
   IsInt,
   IsString,
   IsDateString,
+  IsBoolean,
   Min,
   Max,
 } from 'class-validator';
@@ -37,4 +38,13 @@ export class QueryArticleDto {
   @IsOptional()
   @IsDateString({}, { message: '结束时间格式不正确，应为ISO格式的日期字符串' })
   endTime?: string;
+
+  /**
+   * 是否显示所有文章，包括未激活的
+   * 只有管理员可以设置为true
+   */
+  @IsOptional()
+  @IsBoolean({ message: '显示所有文章必须是布尔值' })
+  @Type(() => Boolean)
+  showAll?: boolean = false;
 }

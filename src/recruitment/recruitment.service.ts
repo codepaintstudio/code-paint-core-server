@@ -61,6 +61,7 @@ export class RecruitmentService {
       endTime,
       email,
       phone,
+      userName,
     } = query;
     const skip = (page - 1) * limit;
 
@@ -91,6 +92,13 @@ export class RecruitmentService {
     if (phone) {
       queryBuilder.andWhere('recruitment.phone LIKE :phone', {
         phone: `%${phone}%`,
+      });
+    }
+
+    // 根据投递者姓名过滤
+    if (userName) {
+      queryBuilder.andWhere('recruitment.userName LIKE :userName', {
+        userName: `%${userName}%`,
       });
     }
 

@@ -23,6 +23,14 @@ export class RecruitmentEntity {
   })
   userId: number;
 
+  // 投递者名字
+  @Column({
+    name: 'user_name',
+    nullable: false,
+    type: 'string'
+  })
+  userName: string;
+
   // 求职类型
   @Column({
     name: 'recr_type',

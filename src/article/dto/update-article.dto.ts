@@ -1,6 +1,7 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateArticleDto } from './create-article.dto';
-import { IsOptional, IsString, Length, MaxLength } from 'class-validator';
+import { IsOptional, IsString, Length, MaxLength, IsBoolean, IsDateString } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class UpdateArticleDto extends PartialType(CreateArticleDto) {
   @IsOptional()
@@ -29,4 +30,26 @@ export class UpdateArticleDto extends PartialType(CreateArticleDto) {
   @IsOptional()
   @IsString({ message: '文章内容必须是字符串' })
   articleContent?: string;
+
+  /**
+   * 文章状态
+   */
+  @IsOptional()
+  @IsBoolean({ message: '文章状态必须是布尔值' })
+  @Type(() => Boolean)
+  isActive?: boolean;
+
+  /**
+   * 开始时间
+   */
+  @IsOptional()
+  @IsDateString({}, { message: '开始时间格式不正确，应为ISO格式的日期字符串' })
+  startTime?: Date;
+
+  /**
+   * 结束时间
+   */
+  @IsOptional()
+  @IsDateString({}, { message: '结束时间格式不正确，应为ISO格式的日期字符串' })
+  endTime?: Date;
 }

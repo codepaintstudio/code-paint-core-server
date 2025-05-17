@@ -66,6 +66,11 @@ export class RecruitmentResponseDto {
    */
   phone: string;
 
+  /**
+   * 投递者姓名
+   */
+  userName: string;
+
   constructor(recruitment: RecruitmentEntity) {
     this.officialResumeId = recruitment.officialResumeId;
     this.userId = recruitment.userId;
@@ -81,6 +86,7 @@ export class RecruitmentResponseDto {
     this.updateTime = recruitment.updateTime;
     this.email = recruitment.email;
     this.phone = recruitment.phone;
+    this.userName = recruitment.userName;
   }
 
   /**

@@ -88,6 +88,31 @@ export class ArticleEntity {
   })
   articleContent: string;
 
+  // 开始时间
+  @Column({
+    type: 'datetime',
+    nullable: true,
+    name: 'start_time'
+  })
+  startTime: Date;
+
+  // 结束时间
+  @Column({
+    type: 'datetime',
+    nullable: true,
+    name: 'end_time'
+  })
+  endTime: Date;
+
+  // 状态。是否开始
+  @Column({
+    type: 'bool',
+    nullable: false,
+    name: 'is_active',
+    default: false
+  })
+  isActive: boolean
+
   // 创建日期
   @CreateDateColumn({
     type: 'datetime',
