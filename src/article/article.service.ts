@@ -65,7 +65,7 @@ export class ArticleService {
       articleAuthor,
       startTime,
       endTime,
-      showAll = false, // 默认只显示激活的文章
+      isActive,
     } = query;
     const skip = (page - 1) * limit;
 
@@ -97,12 +97,17 @@ export class ArticleService {
       );
     }
 
-    // 如果不是显示所有，只显示激活的文章
-    if (!showAll) {
-      queryBuilder.andWhere('article.isActive = :isActive', { isActive: true })
-        .andWhere('(article.startTime IS NULL OR article.startTime <= :now)')
-        .andWhere('(article.endTime IS NULL OR article.endTime >= :now)')
-        .setParameter('now', new Date());
+    // 根据激活状态过滤
+    if (isActive !== undefined) {
+      queryBuilder.andWhere('article.isActive = :isActive', { isActive });
+      
+      // 如果是查询激活的文章，还需要检查时间范围
+      if (isActive === true) {
+        queryBuilder
+          .andWhere('(article.startTime IS NULL OR article.startTime <= :now)')
+          .andWhere('(article.endTime IS NULL OR article.endTime >= :now)')
+          .setParameter('now', new Date());
+      }
     }
 
     // 执行查询并获取结果

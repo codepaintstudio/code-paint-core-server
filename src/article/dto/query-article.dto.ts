@@ -44,7 +44,7 @@ export class QueryArticleDto {
    * 只有管理员可以设置为true
    */
   @IsOptional()
-  @IsBoolean({ message: '显示所有文章必须是布尔值' })
+  @IsBoolean({ message: '文章状态必须是布尔值' })
   @Type(() => Boolean)
-  showAll?: boolean = false;
+  isActive?: boolean;
 }
