@@ -27,7 +27,8 @@ export class RecruitmentEntity {
   @Column({
     name: 'user_name',
     nullable: false,
-    type: 'string'
+    type: 'varchar',
+    length: 100
   })
   userName: string;
 
