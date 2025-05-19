@@ -33,7 +33,7 @@ export class ResumeTemplateService {
     if (!user) {
       throw new NotFoundException(`用户ID ${id} 不存在`);
     }
-    if (user.userAuth !== 2 || user.userAuth !== 3) {
+    if (user.userAuth !== 2 && user.userAuth !== 3) {
       throw new NotFoundException(`用户无权限创建简历模板`);
     }
     const ResumeTemplate = this.resumeTemplateRepository.create({
