@@ -3,7 +3,8 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
-  ConflictException
+  ConflictException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { CreateUsercenterDto } from './dto/create-usercenter.dto';
 import { UpdateUsercenterDto } from './dto/update-usercenter.dto';
@@ -17,7 +18,7 @@ export class UsercenterService {
   constructor(
     @InjectRepository(UserEntity)
     private readonly userRepository: Repository<UserEntity>,
-  ) { }
+  ) {}
   async createUser(createUsercenterDto: CreateUsercenterDto) {
     // 验证密码是否匹配
     if (
@@ -180,5 +181,27 @@ export class UsercenterService {
     const data = await this.userRepository.delete(id);
 
     return data;
+  }
+  async updateUserAuth(userId: number, newAuth: number, operatorId: number) {
+    // 1. 禁止修改自己
+    if (userId === operatorId) {
+      throw new ForbiddenException('不能修改自己的权限');
+    }
+
+    // 2. 查询当前用户是否存在
+    const user = await this.userRepository.findOneBy({ userId });
+
+    if (!user) {
+      throw new NotFoundException(`用户 ID ${userId} 不存在`);
+    }
+
+    // 3. 确保当前要修改的目标权限是 1 或 2
+    if (![1, 2].includes(user.userAuth)) {
+      throw new ForbiddenException('只能修改普通用户或管理员的权限');
+    }
+
+    // 4. 更新权限
+    user.userAuth = newAuth;
+    return this.userRepository.save(user);
   }
 }

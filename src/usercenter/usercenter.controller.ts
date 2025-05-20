@@ -17,6 +17,7 @@ import { UpdateUsercenterDto } from './dto/update-usercenter.dto';
 import { AuthGuard } from '../auth/auth.guard';
 import { AdminGuard } from '../auth/guards/admin.guard';
 import { QueryUsercenterDto } from './dto/query-usercenter.dto';
+import { SuperAdminGuard } from 'src/auth/guards/superAdmin.gurad';
 
 @Controller('usercenter')
 export class UsercenterController {
@@ -83,5 +84,16 @@ export class UsercenterController {
   @UseGuards(AuthGuard, AdminGuard)
   remove(@Param('id') id: string, @Request() req) {
     return this.usercenterService.remove(+id);
+  }
+
+  @Patch(':id/auth')
+  @UseGuards(AuthGuard, SuperAdminGuard) // 只有登录 + 超级管理员才能访问
+  async updateUserAuth(
+    @Param('id') id: string,
+    @Body() dto: UpdateUsercenterDto,
+    @Request() req,
+  ) {
+    const operatorId = req.user.userId; 
+    return this.usercenterService.updateUserAuth(+id, dto.userAuth, operatorId);
   }
 }

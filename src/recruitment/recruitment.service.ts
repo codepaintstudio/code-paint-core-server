@@ -178,7 +178,7 @@ export class RecruitmentService {
     }
 
     // 检查权限：只有管理员可以修改
-    const isAdmin = user.userAuth === 2;
+    const isAdmin = user.userAuth === 2 || user.userAuth === 3;
 
     if (!isAdmin) {
       throw new ForbiddenException(
@@ -222,7 +222,7 @@ export class RecruitmentService {
     }
 
     // 检查权限：只有管理员可以删除
-    const isAdmin = user.userAuth === 2;
+    const isAdmin = user.userAuth === 2 || user.userAuth === 3;
 
     if (!isAdmin) {
       throw new ForbiddenException(

@@ -178,7 +178,7 @@ export class ArticleService {
     }
 
     // 检查权限：只有文章作者和管理员可以修改
-    const isAdmin = user.userAuth === 2;
+    const isAdmin = user.userAuth === 2 || user.userAuth === 3;
     const isAuthor = article.userId === userId;
 
     if (!isAdmin && !isAuthor) {
@@ -237,7 +237,7 @@ export class ArticleService {
     }
 
     // 检查权限：只有文章作者和管理员可以删除
-    const isAdmin = user.userAuth === 2;
+    const isAdmin = user.userAuth === 2 || user.userAuth === 3;
     const isAuthor = article.userId === userId;
 
     if (!isAdmin && !isAuthor) {
