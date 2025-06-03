@@ -11,6 +11,7 @@ import { UploadModule } from './upload/upload.module';
 import { RecruitmentModule } from './recruitment/recruitment.module';
 import { ResumeTemplateModule } from './resume-template/resume-template.module';
 import { ResumeModule } from './resume/resume.module';
+import { ProductModule } from './product/product.module';
 const envFilePath = ['.env'];
 export const IS_DEV = process.env.RUNNING_ENV !== 'prod';
 
@@ -40,6 +41,7 @@ if (IS_DEV) {
     RecruitmentModule,
     ResumeTemplateModule,
     ResumeModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [AppService],
