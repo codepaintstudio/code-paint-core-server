@@ -4,17 +4,17 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 
-@Controller()
+@Controller("products")
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(private readonly productService: ProductService) { }
 
   // Admin endpoints
-  @Post('admin/products')
+  @Post('admin')
   create(@Body() createProductDto: CreateProductDto) {
     return this.productService.create(createProductDto);
   }
 
-  @Get('admin/products')
+  @Get('admin')
   findAll(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
@@ -22,24 +22,24 @@ export class ProductController {
     return this.productService.findAll(page, limit);
   }
 
-  @Get('admin/products/:id')
+  @Get('admin/:id')
   findOne(@Param('id') id: string) {
     return this.productService.findOne(+id);
   }
 
-  @Patch('admin/products/:id')
+  @Patch('admin/:id')
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productService.update(+id, updateProductDto);
   }
 
-  @Delete('admin/products/:id')
+  @Delete('admin/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string) {
     await this.productService.remove(+id);
   }
 
   // Public endpoints
-  @Get('products')
+  @Get('')
   findAllActive(
     @Query('page') page?: number,
     @Query('limit') limit?: number,
@@ -47,7 +47,7 @@ export class ProductController {
     return this.productService.findAllActive(page, limit);
   }
 
-  @Get('products/:id')
+  @Get(':id')
   findOnePublic(@Param('id') id: string) {
     return this.productService.findOne(+id);
   }
